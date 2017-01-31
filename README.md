@@ -1,10 +1,10 @@
-pgsql notes  
+### pgsql notes  
 drop schema public cascade;  
 create schema public;
 
 
 
-
+============================================================
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 

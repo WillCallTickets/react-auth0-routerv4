@@ -26,26 +26,26 @@ export function _baseContainer(WrappedComponent, requiresAuth = false) {
         auth0: new Auth0Service(context.router),
         profile: null
       };
-
+    }
+    
+    componentWillMount() {
       if(requiresAuth && !this.state.auth0.isLoggedIn()){
         console.log('This component requires auth - redirecting to login...')
         this.state.auth0.setNextPath(this.props.pathname);
-        context.router.transitionTo(LOGIN_ROUTE);
+        this.context.router.transitionTo(LOGIN_ROUTE);
       }
+  
       // TODO add handler for not in role
       // roles presuppose that auth is required
       // todo
       // else if (requiresAuth && this.state.auth0.isLoggedIn() && )
       // redirect to 'access denied' page
+      
+      
+      // this.profileSubscription = subscribeToProfile((profile) => {
+      //   this.setState({profile});
+      // });
     }
-    
-    
-    
-    // componentWillMount() {
-    //   // this.profileSubscription = subscribeToProfile((profile) => {
-    //   //   this.setState({profile});
-    //   // });
-    // }
     
     // componentWillUnmount() {
     //   //this.profileSubscription.close();

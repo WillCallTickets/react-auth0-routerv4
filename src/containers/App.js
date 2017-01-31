@@ -27,7 +27,6 @@ class App extends Component {
           <Link className="item" activeClassName="active" activeOnlyWhenExact to="/">Home</Link>
           <Link className="item" activeClassName="active" activeOnlyWhenExact to="/games">Games</Link>
           <Link className="item" activeClassName="active" activeOnlyWhenExact to="/games/new">Add New Game</Link>
-      
           <Link className="item" activeClassName="active" activeOnlyWhenExact to="/login">Login</Link>
           <Link className="item" activeClassName="active" activeOnlyWhenExact to="/profile/edit">Profile</Link>
           <a className="item" onClick={(e) => this.logout(e)}>Log Out</a>
