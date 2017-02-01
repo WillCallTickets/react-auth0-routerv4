@@ -3,10 +3,10 @@ import { _baseContainer } from './_baseContainer';
 
 class Login extends Component {
   
-  // static propTypes = {
-  //   ..._baseContainer.PropTypes
-  // }
-  //
+  static propTypes = {
+    ..._baseContainer.PropTypes
+  }
+
   // constructor(props, context) {
   //   super(props, context);
   // //   console.log('LOGIN   CTX', this.context)
@@ -17,11 +17,13 @@ class Login extends Component {
   // }
   
   componentWillMount() {
+    console.log('LOGIN MOUNTING', this.props.auth0.getNextPath())
+    console.log('LOGIN STATE', this.state);
     this.props.auth0.login();
   }
   
   componentWillUnmount() {
-    console.log('LOGIN UNMOUNT', this.props);
+    console.log('LOGIN UNMOUNT', this.props.auth0.getNextPath());
     this.props.auth0.lock.hide();
     // todo is this necessary?
     // this.props.auth0.login = null;
@@ -29,8 +31,8 @@ class Login extends Component {
   
   login = (e) => {
     e.preventDefault();
-    console.log('HOME   CTX', this.context)
-    console.log('HOME PROPS', this.props)
+    console.log('LOG   CTX', this.context)
+    console.log('LOG PROPS', this.props)
     this.props.auth0.login();
   }
   

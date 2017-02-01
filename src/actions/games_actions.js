@@ -39,9 +39,18 @@ export function saveGame(data) {
 }
 
 export function fetchGames(){
+  console.log('Games_actions - fetchGames()')
   return dispatch => {
     fetch('/api/games')
-    .then(res => res.json()) // TODO status check
-    .then(data => dispatch(setGames(data.games)));
+    .then(res => {
+      // console.log('fetchGames response', res)
+      
+      return res.json()}) // TODO status check
+    .then(data => {
+      // console.log('fetchGames response', data.games)
+  
+      dispatch(setGames(data.games))
+    
+    });
   }
 }

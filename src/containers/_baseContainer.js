@@ -1,13 +1,17 @@
 import React, { Component, PropTypes } from 'react';
-import Auth0Service, { LOGIN_ROUTE } from '../services/Auth0Service';
+import Auth0Service from '../services/Auth0Service';
 
 // export function _baseContainer(WrappedComponent, requiresAuth = false, roles = []) {
-export function _baseContainer(WrappedComponent, requiresAuth = false) {
+export function _baseContainer(WrappedComponent) {
   
   return class _baseContainer extends Component {
     static contextTypes = {
       router: PropTypes.object
     }
+    
+    // static propTypes = {
+    //   location: PropTypes.object
+    // }
     
     constructor(props, context) {
       // console.log('CTX', context);
@@ -28,12 +32,12 @@ export function _baseContainer(WrappedComponent, requiresAuth = false) {
       };
     }
     
-    componentWillMount() {
-      if(requiresAuth && !this.state.auth0.isLoggedIn()){
-        console.log('This component requires auth - redirecting to login...')
-        this.state.auth0.setNextPath(this.props.pathname);
-        this.context.router.transitionTo(LOGIN_ROUTE);
-      }
+    // componentWillMount() {
+      // if(requiresAuth && !this.state.auth0.isLoggedIn()){
+      //   console.log('This component requires auth - redirecting to login...')
+      //   //this.state.auth0.setNextPath(this.props.pathname);
+      //   this.context.router.transitionTo(LOGIN_ROUTE);
+      // }
   
       // TODO add handler for not in role
       // roles presuppose that auth is required
@@ -45,7 +49,7 @@ export function _baseContainer(WrappedComponent, requiresAuth = false) {
       // this.profileSubscription = subscribeToProfile((profile) => {
       //   this.setState({profile});
       // });
-    }
+    // }
     
     // componentWillUnmount() {
     //   //this.profileSubscription.close();
@@ -69,6 +73,7 @@ export function _baseContainer(WrappedComponent, requiresAuth = false) {
     //   return updateProfile(this.state.profile.user_id, newProfile);
     // }
   };
+  
 }
 
 _baseContainer.PropTypes = {

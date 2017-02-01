@@ -7,9 +7,9 @@ class EditProfile extends Component {
   //   ...connectProfile.PropTypes
   // };
   
-  // static propTypes = {
-  //   ..._baseContainer.PropTypes
-  // }
+  static propTypes = {
+    ..._baseContainer.PropTypes
+  }
   
   constructor(props, context) {
     super(props, context);
@@ -90,4 +90,4 @@ class EditProfile extends Component {
   }
 }
 
-export default _baseContainer(EditProfile, true);
+export default _baseContainer(EditProfile);

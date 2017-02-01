@@ -51,16 +51,15 @@ export default class Auth0Service extends EventEmitter {
   
   _doAuthentication(authResult){
     var nPath = this.getNextPath();
-    console.log('NEXT PATH', nPath)
+    console.log('DO AUTH - NEXT PATH', nPath)
     
     
     // Saves the user token
     this.setIdToken(authResult.idToken);
     // navigate to the home route
     // browserHistory.replace('/home')
-    //this.router.transitionTo('/home');
     // TODO do this with redux instead?
-    this.router.transitionTo(this.getNextPath() || DEFAULT_POST_LOGIN_ROUTE);
+    // this.router.transitionTo('/');//this.getNextPath() || DEFAULT_POST_LOGIN_ROUTE);
         
     // Async loads the user profile data
     this.lock.getProfile(authResult.idToken, (error, profile) => {
@@ -68,6 +67,9 @@ export default class Auth0Service extends EventEmitter {
         console.log('Error loading the Profile', error);
       } else {
         this.setProfile(profile);
+        
+        console.log('AUTH0 - Post get profile', 'redirect?');
+        this.router.transitionTo('/');
       }
     });
   }
@@ -79,7 +81,10 @@ export default class Auth0Service extends EventEmitter {
   
   // login method shows the widget
   login() {
-    console.log('Auth0Service - LOGIN called')
+    console.log('Auth0Service - LOGIN called', this.lock)
+    
+    
+    // this.lock.auth.redirectUrl = `${window.location.origin}{this.getNextPath()}`;
     this.lock.show({});
     
     return {
