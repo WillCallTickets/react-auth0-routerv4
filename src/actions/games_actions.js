@@ -34,7 +34,9 @@ export function saveGame(data) {
         "Content-Type": "application/json"
       }
     }).then(handleResponse)
-      .then(data => dispatch(addGame(data.game)));
+    // dispatch a pure action to update our games list
+    // send the same data we sent to the server
+    .then(data => dispatch(addGame(data.game)));
   }
 }
 

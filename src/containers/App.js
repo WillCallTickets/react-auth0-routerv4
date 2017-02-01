@@ -6,6 +6,7 @@ import Home from './Home';
 import Login from './Login';
 import EditProfile from './EditProfile';
 import GamesPage from './GamesPage';
+import GameForm from './GameForm';
 
 class App extends Component {
   static contextTypes = {
@@ -35,13 +36,9 @@ class App extends Component {
         
         <div className="ui five item menu" style={{justifyContent:'flex-start', textAlign:'left'}}>
           
-          {/*TODO combine links into one expression */}
+          {/* TODO combine links into one expression */}
           <Link className="item" activeClassName="active" activeOnlyWhenExact to="/">Home</Link>
-          { logged ? (
-              <Link className="item" activeClassName="active" activeOnlyWhenExact to="/games">Games</Link>
-            ) : (
-              <span className="item"></span>
-            )}
+          <Link className="item" activeClassName="active" activeOnlyWhenExact to="/games">Games</Link>
   
           { logged ? (
               <Link className="item" activeClassName="active" activeOnlyWhenExact to="/games/new">Add New Game</Link>
@@ -64,10 +61,22 @@ class App extends Component {
         </div>
         {/* end of nav menu */}
         
+        {/* TODO look into switch construct of RRv4 - switch ensures only on e component match*/}
         <div className="page-content">
           <Match exactly pattern="/" component={Home}/>
           <Match pattern="/login" component={Login}/>
-          <Match pattern="/games" component={GamesPage}/>
+          <Match exactly pattern="/games" component={GamesPage}/>
+          
+          <Match pattern="/games/new" render={() => (
+            logged ? (
+                <GameForm/>
+              ) : (
+                <Redirect to={{
+                  pathname: '/login',
+                  state: { referrer: '/games/new' }
+                }} />
+              )
+          )}/>
           
           <Match pattern="/profile/edit" render={() => (
             logged ? (
