@@ -45,21 +45,18 @@ export default class Auth0Service extends EventEmitter {
     this.lock.on('authorization_error', this._authorizationError.bind(this))
     // binds login functions to keep this context
     this.login = this.login.bind(this)
-  
+      
     this.instance = this;
   }
   
   _doAuthentication(authResult){
     var nPath = this.getNextPath();
     console.log('DO AUTH - NEXT PATH', nPath)
-    
-    
-    // Saves the user token
+        
+    // Save the user & access token
     this.setIdToken(authResult.idToken);
-    // navigate to the home route
-    // browserHistory.replace('/home')
-    // TODO do this with redux instead?
-    // this.router.transitionTo('/');//this.getNextPath() || DEFAULT_POST_LOGIN_ROUTE);
+    this.setAccessToken(authResult.accessToken);
+    // TODO dispatch redux action to save token to store?
         
     // Async loads the user profile data
     this.lock.getProfile(authResult.idToken, (error, profile) => {
@@ -68,8 +65,14 @@ export default class Auth0Service extends EventEmitter {
       } else {
         this.setProfile(profile);
         
-        console.log('AUTH0 - Post get profile', 'redirect?');
-        this.router.transitionTo('/');
+        console.log('AUTH0 - Post get profile example', '<Redirect to= pathname: "/login", state: { referrer: "/profile/edit" ');
+        // default is to redirect to login page - set by lock component
+        // unfortunately, this creates an endless loop to the login page and
+        // worse yet, it redirects to /login#
+        
+        // by redirecting to the home route '/', or a route of our choice,
+        // the router is able to use it's state.referrer
+        this.router.transitionTo(DEFAULT_POST_LOGIN_ROUTE);
       }
     });
   }
@@ -82,9 +85,6 @@ export default class Auth0Service extends EventEmitter {
   // login method shows the widget
   login() {
     console.log('Auth0Service - LOGIN called', this.lock)
-    
-    
-    // this.lock.auth.redirectUrl = `${window.location.origin}{this.getNextPath()}`;
     this.lock.show({});
     
     return {
@@ -112,7 +112,61 @@ export default class Auth0Service extends EventEmitter {
     this.router.transitionTo(transitionTo);
   }
   
-  // PROFILE
+ // PROFILE SUBSCRIPTION
+  subscribeToProfile(subscription) {
+    let self = this; // set this up to be available in the return > close block
+    self.on('profile_updated', subscription);
+  
+    if (self.isLoggedIn()) {
+      subscription(self.getProfile());
+
+      self.lock.getUserInfo(this.getAccessToken(), (error, profile) => {
+        if (error) {
+          return self.setProfile({error});
+        }
+        self.setProfile(profile);
+      });
+    }
+    
+    return {
+      close() {
+        self.removeListener('profile_updated', subscription);
+      }
+    };
+  }
+  
+  fetchAsUser(input, init={}) {
+    const headers = init.headers || {};
+    
+    return fetch(input, {
+      ...init,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.getIdToken()}`,
+        ...headers
+      }
+    }).then((response) => {
+      if (!response.ok) { throw new Error(response); }
+      return response;
+    });
+  }
+  
+  async updateProfile(userId, newProfile) {
+    try {
+      const response = await this.fetchAsUser(`https://${process.env.REACT_APP_AUTH0_DOMAIN}/api/v2/users/${userId}`, {
+        method: 'PATCH',
+        body: JSON.stringify(newProfile)
+      });
+      
+      const profile = await response.json();
+      this.setProfile(profile);
+    } catch (error) {
+      return error;
+    }
+  }
+  
+  // PROFILE STORAGE
   getProfile() {
     const profile = localStorage.getItem('profile');
     return profile ? JSON.parse(localStorage.profile) : {};
@@ -128,7 +182,7 @@ export default class Auth0Service extends EventEmitter {
     this.emit('profile_updated', null);
   }
   
-  // ID_TOKEN
+  // ID_TOKEN STORAGE
   getIdToken() {
     return localStorage.getItem(ID_TOKEN_KEY);
   }
@@ -139,7 +193,7 @@ export default class Auth0Service extends EventEmitter {
     localStorage.removeItem(ID_TOKEN_KEY);
   }
   
-  // NEXT_PATH
+  // NEXT_PATH STORAGE
   getNextPath() {
     return localStorage.getItem(NEXT_PATH_KEY) || ROOT_ROUTE;
   }
@@ -150,7 +204,7 @@ export default class Auth0Service extends EventEmitter {
     localStorage.removeItem(NEXT_PATH_KEY);
   }
   
-  // ACCESS_TOKEN
+  // ACCESS_TOKEN STORAGE
   getAccessToken() {
     return localStorage.getItem(ACCESS_TOKEN_KEY);
   }
@@ -160,6 +214,4 @@ export default class Auth0Service extends EventEmitter {
   clearAccessToken() {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
   }
-  
-  
 }

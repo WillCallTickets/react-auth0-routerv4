@@ -6,15 +6,6 @@ class Login extends Component {
   static propTypes = {
     ..._baseContainer.PropTypes
   }
-
-  // constructor(props, context) {
-  //   super(props, context);
-  // //   console.log('LOGIN   CTX', this.context)
-  // //   console.log('LOGIN PROPS', this.props)
-  //   this.state = {
-  //     loginWidget: null
-  //   }
-  // }
   
   componentWillMount() {
     console.log('LOGIN MOUNTING', this.props.auth0.getNextPath())
@@ -37,6 +28,9 @@ class Login extends Component {
   }
   
   render() {
+    console.log('LOGIN   CTX', this.context)
+    console.log('LOGIN PROPS', this.props)
+    
     return (
       <div className="Login">
         <a className="Login-loginButton" onClick={(e) => this.login(e)}>Login with Auth0</a>
@@ -44,14 +38,5 @@ class Login extends Component {
     );
   }
 }
-
-// Login.contextTypes = {
-//   router: React.PropTypes.object
-// }
-
-// const mapStateToProps = (state, ownProps) => {
-//   console.log('MAPPER 1', state);
-//   console.log('MAPPER 2', ownProps);
-// }
 
 export default _baseContainer(Login);

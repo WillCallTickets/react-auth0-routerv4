@@ -7,7 +7,6 @@ import Login from './Login';
 import EditProfile from './EditProfile';
 import GamesPage from './GamesPage';
 
-
 class App extends Component {
   static contextTypes = {
     router: React.PropTypes.object
@@ -33,40 +32,56 @@ class App extends Component {
     
     return (
       <div className="ui container">
+        
         <div className="ui five item menu" style={{justifyContent:'flex-start', textAlign:'left'}}>
+          
+          {/*TODO combine links into one expression */}
           <Link className="item" activeClassName="active" activeOnlyWhenExact to="/">Home</Link>
-          <Link className="item" activeClassName="active" activeOnlyWhenExact to="/profile/edit">Profile</Link>
-  
           { logged ? (
               <Link className="item" activeClassName="active" activeOnlyWhenExact to="/games">Games</Link>
-            ) :
-            ''
-          }
+            ) : (
+              <span className="item"></span>
+            )}
   
           { logged ? (
-            <Link className="item" activeClassName="active" activeOnlyWhenExact to="/games/new">Add New Game</Link>
-            ) :
-            ''
-          }
-          
-          <a className="item" onClick={(e) => this.logout(e)}>Log Out</a>
-        </div>
-    
-        <Match exactly pattern="/" component={Home}/>
-        <Match pattern="/login" component={Login}/>
-        <Match pattern="/games" component={GamesPage}/>
-        <Match pattern="/profile/edit" render={() => (
-          
-          
-          logged ? (
-              <EditProfile />
+              <Link className="item" activeClassName="active" activeOnlyWhenExact to="/games/new">Add New Game</Link>
             ) : (
-              <Redirect to={{
-                pathname: '/login',
-                state: { referrer: '/profile/edit' }
-              }} />
-            )
-        )}/>
+              <span className="item"></span>
+            )}
+  
+          { logged ? (
+              <Link className="item" activeClassName="active" activeOnlyWhenExact to="/profile/edit">Profile</Link>
+            ) : (
+              <span className="item"></span>
+            )}
+  
+          { logged ? (
+              <a className="item" onClick={(e) => this.logout(e)}>Log Out</a>
+            ) : (
+              <Link className="item" activeClassName="active" activeOnlyWhenExact to="/profile/edit">Login</Link>
+            )}
+          
+        </div>
+        {/* end of nav menu */}
+        
+        <div className="page-content">
+          <Match exactly pattern="/" component={Home}/>
+          <Match pattern="/login" component={Login}/>
+          <Match pattern="/games" component={GamesPage}/>
+          
+          <Match pattern="/profile/edit" render={() => (
+            logged ? (
+                <EditProfile />
+              ) : (
+                <Redirect to={{
+                  pathname: '/login',
+                  state: { referrer: '/profile/edit' }
+                }} />
+              )
+          )}/>
+        </div>
+        {/* end of page-content */}
+        
       </div>
     );
   }

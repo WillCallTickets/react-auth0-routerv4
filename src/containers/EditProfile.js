@@ -1,20 +1,13 @@
 import React, { Component } from 'react';
 import { _baseContainer } from './_baseContainer';
-// import { connectProfile } from '../models/connect_profile';
 
 class EditProfile extends Component {
-  // static propTypes = {
-  //   ...connectProfile.PropTypes
-  // };
-  
   static propTypes = {
     ..._baseContainer.PropTypes
   }
   
   constructor(props, context) {
     super(props, context);
-    console.log('PROFILE   CTX', this.context)
-    console.log('PROFILE PROPS', this.props)
   
     this.state = {
       error: null,
@@ -24,6 +17,9 @@ class EditProfile extends Component {
   }
   
   render() {
+    console.log('PROFILE   CTX', this.context)
+    console.log('PROFILE PROPS', this.props)
+    
     const {profile} = this.props;
     
     if(profile){
