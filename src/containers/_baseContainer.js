@@ -25,7 +25,7 @@ export function _baseContainer(WrappedComponent) {
       // else if (requiresAuth && this.state.auth0.isLoggedIn() && )
       // redirect to 'access denied' page
       
-      console.log('comp will mount')
+      // console.log('comp will mount')
       this.profileSubscription = this.state.auth0.subscribeToProfile((profile) => {
         this.setState({profile});
       });

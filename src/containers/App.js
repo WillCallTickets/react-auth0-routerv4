@@ -6,7 +6,7 @@ import Home from './Home';
 import Login from './Login';
 import EditProfile from './EditProfile';
 import GamesPage from './GamesPage';
-import GameForm from './GameForm';
+import GameFormPage from './GameFormPage';
 
 class App extends Component {
   static contextTypes = {
@@ -25,9 +25,9 @@ class App extends Component {
   }
   
   render () {
-    console.log('App Props',this.context.router)
-    console.log('App Props',this.props.location)
-    console.log('App Logged',this.props.auth0.isLoggedIn())
+    // console.log('App Props',this.context.router)
+    // console.log('App Props',this.props.location)
+    // console.log('App Logged',this.props.auth0.isLoggedIn())
     
     const logged = this.props.auth0.isLoggedIn();
     
@@ -69,7 +69,7 @@ class App extends Component {
           
           <Match pattern="/games/new" render={() => (
             logged ? (
-                <GameForm/>
+                <GameFormPage />
               ) : (
                 <Redirect to={{
                   pathname: '/login',
@@ -77,6 +77,18 @@ class App extends Component {
                 }} />
               )
           )}/>
+  
+          {/* Note how we pass params here */}
+          <Match exactly pattern="/game/:id" render={(id) => (
+           logged ? (
+               <GameFormPage {...id}/>
+             ) : (
+               <Redirect to={{
+                 pathname: '/login',
+                 state: { referrer: `/games/${id}` }
+               }} />
+             )
+         )}/>
           
           <Match pattern="/profile/edit" render={() => (
             logged ? (
@@ -97,3 +109,16 @@ class App extends Component {
 }
 
 export default _baseContainer(App);
+
+//
+// {/* :id will be available at GameForm>props*/}
+// <Match exactly pattern="/game/:id" render={() => (
+//   logged ? (
+//       <GameForm/>
+//     ) : (
+//       <Redirect to={{
+//         pathname: '/login',
+//         state: { referrer: '/games/:id' }
+//       }} />
+//     )
+// )}/>

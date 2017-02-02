@@ -1,18 +1,25 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
-import { saveGame } from '../actions/games_actions';
 
 class GameForm extends Component {
+
   state = {
-    title: '',
-    cover: '',
+    id: this.props.game ? this.props.game.id : null,
+    title: this.props.game ? this.props.game.title : '',
+    cover: this.props.game ? this.props.game.cover :  '',
     errors: {},
-    loading: false,
-    done: false
+    loading: false
   }
-  
+
+  // handle state updates
+  componentWillReceiveProps = (nextProps) => {
+    this.setState({
+      id: nextProps.game.id,
+      title: nextProps.game.title,
+      cover: nextProps.game.cover
+    });
+  }
+    
   handleChange = (e) => {
     if(!!this.state.errors[e.target.name]){
       // clone errors from state to local var
@@ -42,16 +49,40 @@ class GameForm extends Component {
     const isValid = Object.keys(errors).length === 0;
     
     if(isValid){
-      const { title, cover } = this.state;
+      const { id, title, cover } = this.state;
       this.setState({ loading: true });
-      this.props.saveGame({ title, cover }).then(
-        () => { this.setState({ done: true })},
-        (err) => err.response.json().then(({errors}) => this.setState({ errors, loading: false }))
-      );
+      this.props.saveGame({id, title, cover})
+      .catch((err) => err.response.json().then(({errors}) => this.setState({errors, loading: false})));
+      
+      
+      // instead of duping the logic here - pass to the action and let it handle the situation
+      // or we could introduce a page component that will handle this
+      // OLD WAY
+      // if(id) {
+      //   this.props.updateGame({id, title, cover})
+      //   .then(
+      //     () => {
+      //       this.setState({done: true})
+      //     },
+      //     (err) => err.response.json().then(({errors}) => this.setState({errors, loading: false}))
+      //   );
+      // } else {
+      //   this.props.saveGame({title, cover})
+      //   .then(
+      //     () => {
+      //       this.setState({done: true})
+      //     },
+      //     (err) => err.response.json().then(({errors}) => this.setState({errors, loading: false}))
+      //   );
+      // }
+      // END OLD WAY
+      
     }
   }
   
   render() {
+    console.log('MY GAME', this.props.game)
+    
     const form = (
       <div>
         <form className={classnames('ui form', { loading: this.state.loading })} onSubmit={this.handleSubmit}>
@@ -94,10 +125,16 @@ class GameForm extends Component {
     
     return (
       <div>
-        { this.state.done ?  <Redirect to="/games" /> : form }
+        { form }
       </div>
     );
   }
 }
 
-export default connect(null, { saveGame })(GameForm);
+export default GameForm;
+
+/* flow when given an id
+1) search redux store for instance with matching id and provide to this component
+2) fetch game data from server
+3) if no id - then create a new game
+ */

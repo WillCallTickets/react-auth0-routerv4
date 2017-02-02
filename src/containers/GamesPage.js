@@ -11,7 +11,7 @@ class GamesPage extends Component{
   
   render(){
     
-    console.log('GAMES RETURNED From Fetch', this.props.games)
+    // console.log('GAMES RETURNED From Fetch', this.props.games)
     
     return(
       <div>
