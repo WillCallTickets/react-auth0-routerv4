@@ -1,22 +1,43 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchGames } from '../actions/games_actions';
+import { Redirect } from 'react-router';
+import { fetchGames, deleteGame } from '../actions/games_actions';
 
 import GamesList from '../components/GamesList';
 
 class GamesPage extends Component{
-  componentDidMount(){
+  state = {
+    redirect: false
+  }
+  
+  componentDidMount = () => {
     this.props.fetchGames();
   }
   
+  // this will be passed to form component
+  deleteGame = ({id}) => {
+    console.log('deleting in g page')
+    return this.props.deleteGame({id})
+    .then(
+      () => {
+        this.setState({redirect: true})
+      }
+    );
+  }
+  
+  
   render(){
-    
-    // console.log('GAMES RETURNED From Fetch', this.props.games)
-    
+    // console.log('GAMES RETURNED From Fetch', this.props)
     return(
       <div>
-        <h1>Games List</h1>
-        <GamesList games={this.props.games} />
+        {
+          this.state.redirect ?
+            <Redirect to="/games" /> :
+            <div>
+            <h1>Games List</h1>
+            < GamesList games={this.props.games} deleteGame={this.props.deleteGame} />
+            </div>
+        }
       </div>
     );
   }
@@ -24,7 +45,8 @@ class GamesPage extends Component{
 
 GamesPage.propTypes = {
   games: React.PropTypes.array.isRequired,
-  fetchGames: React.PropTypes.func.isRequired
+  fetchGames: React.PropTypes.func.isRequired,
+  deleteGame: React.PropTypes.func.isRequired
 }
 
 function mapStateToProps(state){
@@ -33,4 +55,4 @@ function mapStateToProps(state){
   }
 }
 
-export default connect(mapStateToProps, { fetchGames })(GamesPage);
+export default connect(mapStateToProps, { fetchGames, deleteGame })(GamesPage);

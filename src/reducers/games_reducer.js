@@ -1,7 +1,17 @@
-import { SET_GAMES, ADD_GAME, GAME_FETCHED, GAME_UPDATED } from '../actions/games_actions';
+import { SET_GAMES, ADD_GAME, GAME_FETCHED, GAME_UPDATED, GAME_DELETED } from '../actions/games_actions';
 
 export default function games(state = [], action = {}){
   switch(action.type){
+  
+    case GAME_DELETED:
+      return state.filter(item => {
+        return (item.id !== parseInt(action.id, 10));
+      });
+  
+      // console.log('REDUCER DEL ID', action.id)
+      // console.log('REDUCER COLL', coll)
+      // return coll;
+      
     case GAME_UPDATED:
       return state.map(item => {
         if(item.id === parseInt(action.game.id, 10))

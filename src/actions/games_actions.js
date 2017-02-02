@@ -2,8 +2,10 @@ export const SET_GAMES = 'SET_GAMES';
 export const ADD_GAME = 'ADD_GAME';
 export const GAME_FETCHED = 'GAME_FETCHED';
 export const GAME_UPDATED = 'GAME_UPDATED';
+export const GAME_DELETED = 'GAME_DELETED';
 
 function handleResponse(response) {
+  // console.log('RESPONSE HANDLER', response)
   if(response.ok) {
     return response.json();
   } else {
@@ -41,6 +43,13 @@ export function gameUpdated(game) {
   }
 }
 
+export function gameDeleted(id) {
+  return {
+    type: GAME_DELETED,
+    id
+  }
+}
+
 export function updateGame(data) {
   return dispatch => {
     return fetch(`/api/games/${data.id}`, {
@@ -72,7 +81,7 @@ export function saveGame(data) {
 }
 
 export function fetchGames(){
-  console.log('Games_actions - fetchGames()')
+  //console.log('Games_actions - fetchGames()')
   return dispatch => {
     fetch('/api/games')
     .then(res => {
@@ -103,3 +112,26 @@ export function fetchGame(id){
     });
   }
 }
+
+export function deleteGame(id) {
+  console.log('Games actions - deleteGame()', id)
+  
+  return dispatch => {
+    fetch(`/api/games/${id}`, {
+      method: 'delete',
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(handleResponse)
+    // dispatch a pure action to update our games list
+    // send the same data we sent to the server
+    .then(() => {
+      // console.log('Dispatched delete', id)
+      dispatch(gameDeleted(id))
+    })
+      .catch(err => {
+        console.log('DELETE ERROR', err)
+      });
+  }
+}
+

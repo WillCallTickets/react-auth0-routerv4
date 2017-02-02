@@ -81,7 +81,7 @@ class GameForm extends Component {
   }
   
   render() {
-    console.log('MY GAME', this.props.game)
+    // console.log('MY GAME', this.props.game)
     
     const form = (
       <div>
