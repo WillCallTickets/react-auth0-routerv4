@@ -9,13 +9,10 @@ export function _baseContainer(WrappedComponent) {
       router: PropTypes.object
     }
     
-    // constructor(props, context) {
-    //   super(props);
-      state = {
-        auth0: new Auth0Service(this.context.router),
-        profile: null
-      };
-    // }
+    state = {
+      auth0: new Auth0Service(this.context.router),
+      profile: null
+    };
     
     componentWillMount() {
       
@@ -38,7 +35,6 @@ export function _baseContainer(WrappedComponent) {
     render() {
       // console.log('CTX', context);
       // console.log('PROPS', props);
-  
       return (
         <WrappedComponent
           {...this.props}
@@ -60,6 +56,3 @@ _baseContainer.PropTypes = {
   profile: PropTypes.object,
   onUpdateProfile: PropTypes.func
 };
-
-
-

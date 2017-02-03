@@ -3,7 +3,6 @@ import { Link } from 'react-router';
 import Modal, {closeStyle} from 'simple-react-modal'
 import './modal.css';
 
-
 class GameCard extends Component {
   
   constructor(){
@@ -20,7 +19,6 @@ class GameCard extends Component {
   }
   
   deleteSelectedGame(e) {
-    //console.log('delete called')
     this.props.deleteGame(this.props.game.id);
     this.toggleDeleteModal(null);
   }
@@ -39,14 +37,11 @@ class GameCard extends Component {
           show={this.state.showDeleteModal}
           //transitionSpeed={1000}
           onClose={(e) => this.toggleDeleteModal(e)}>
-  
           <div className="modal-content">
             <div className="modal-header">
               <a style={closeStyle} onClick={(e) => this.toggleDeleteModal(e)}>X</a>
             </div>
-          
             <div className="modal-body">Are you sure you want to delete <strong>{this.props.game.title}</strong>?</div>
-    
             <div className="modal-footer">
               <div className="ui two buttons">
                 <a className="ui button green" onClick={(e) => this.deleteSelectedGame(e)}>Yes</a>
@@ -54,7 +49,6 @@ class GameCard extends Component {
               </div>
             </div>
           </div>
-  
         </Modal>
         
         <div className="image">
@@ -67,9 +61,6 @@ class GameCard extends Component {
           <div className="ui two buttons">
             <Link to={`/game/${this.props.game.id}`} className="ui basic button green">Edit</Link>
             <a className="ui basic button red" onClick={(e) => this.toggleDeleteModal(e)}>Delete</a>
-          
-            
-        
           </div>
         </div>
       </div>
@@ -78,7 +69,8 @@ class GameCard extends Component {
 }
 
 GameCard.propTypes = {
-  game: React.PropTypes.object.isRequired
+  game: React.PropTypes.object.isRequired,
+  deleteGame: React.PropTypes.func.isRequired
 }
 
 export default GameCard;

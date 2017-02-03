@@ -16,8 +16,6 @@ class Login extends Component {
   componentWillUnmount() {
     console.log('LOGIN UNMOUNT', this.props.auth0.getNextPath());
     this.props.auth0.lock.hide();
-    // todo is this necessary?
-    // this.props.auth0.login = null;
   }
   
   login = (e) => {

@@ -12,8 +12,6 @@ export default function GamesList ({ games, deleteGame })  {
     </div>
   );
   
-  //console.log('GAMES LIST PROPS', this.props)
-  
   return (
     <div>
       { games.length === 0 ? emptyMessage : gamesList }
@@ -22,7 +20,8 @@ export default function GamesList ({ games, deleteGame })  {
 }
 
 GamesList.propTypes = {
-  games: React.PropTypes.array.isRequired
+  games: React.PropTypes.array.isRequired,
+  deleteGame: React.PropTypes.func.isRequired
 }
 
 

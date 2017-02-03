@@ -53,30 +53,6 @@ class GameForm extends Component {
       this.setState({ loading: true });
       this.props.saveGame({id, title, cover})
       .catch((err) => err.response.json().then(({errors}) => this.setState({errors, loading: false})));
-      
-      
-      // instead of duping the logic here - pass to the action and let it handle the situation
-      // or we could introduce a page component that will handle this
-      // OLD WAY
-      // if(id) {
-      //   this.props.updateGame({id, title, cover})
-      //   .then(
-      //     () => {
-      //       this.setState({done: true})
-      //     },
-      //     (err) => err.response.json().then(({errors}) => this.setState({errors, loading: false}))
-      //   );
-      // } else {
-      //   this.props.saveGame({title, cover})
-      //   .then(
-      //     () => {
-      //       this.setState({done: true})
-      //     },
-      //     (err) => err.response.json().then(({errors}) => this.setState({errors, loading: false}))
-      //   );
-      // }
-      // END OLD WAY
-      
     }
   }
   
@@ -137,4 +113,26 @@ export default GameForm;
 1) search redux store for instance with matching id and provide to this component
 2) fetch game data from server
 3) if no id - then create a new game
+ 
+ // instead of duping the logic here - pass to the action and let it handle the situation
+ // or we could introduce a page component that will handle this
+ // OLD WAY
+ // if(id) {
+ //   this.props.updateGame({id, title, cover})
+ //   .then(
+ //     () => {
+ //       this.setState({done: true})
+ //     },
+ //     (err) => err.response.json().then(({errors}) => this.setState({errors, loading: false}))
+ //   );
+ // } else {
+ //   this.props.saveGame({title, cover})
+ //   .then(
+ //     () => {
+ //       this.setState({done: true})
+ //     },
+ //     (err) => err.response.json().then(({errors}) => this.setState({errors, loading: false}))
+ //   );
+ // }
+ // END OLD WAY
  */

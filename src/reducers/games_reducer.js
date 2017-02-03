@@ -1,16 +1,15 @@
 import { SET_GAMES, ADD_GAME, GAME_FETCHED, GAME_UPDATED, GAME_DELETED } from '../actions/games_actions';
 
 export default function games(state = [], action = {}){
+  // console.log('REDUCER ACTION', action)
+  
   switch(action.type){
   
     case GAME_DELETED:
+      // only return items in the state that do not match our deleted id
       return state.filter(item => {
         return (item.id !== parseInt(action.id, 10));
       });
-  
-      // console.log('REDUCER DEL ID', action.id)
-      // console.log('REDUCER COLL', coll)
-      // return coll;
       
     case GAME_UPDATED:
       return state.map(item => {
@@ -35,6 +34,7 @@ export default function games(state = [], action = {}){
           action.game
         ]
       }
+      
     case ADD_GAME:
       // return the entire collection of games plus the newly added game
       return [

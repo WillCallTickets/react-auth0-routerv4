@@ -81,15 +81,12 @@ export function saveGame(data) {
 }
 
 export function fetchGames(){
-  //console.log('Games_actions - fetchGames()')
   return dispatch => {
     fetch('/api/games')
     .then(res => {
-      // console.log('fetchGames response', res)
       return res.json();
     }) // TODO status check
     .then(data => {
-      // console.log('fetchGames response', data.games)
       dispatch(setGames(data.games));
     });
   }
@@ -123,10 +120,8 @@ export function deleteGame(id) {
         "Content-Type": "application/json"
       }
     }).then(handleResponse)
-    // dispatch a pure action to update our games list
-    // send the same data we sent to the server
+    // dispatch an action to update our games list
     .then(() => {
-      // console.log('Dispatched delete', id)
       dispatch(gameDeleted(id))
     })
       .catch(err => {

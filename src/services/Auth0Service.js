@@ -84,12 +84,13 @@ export default class Auth0Service extends EventEmitter {
   
   // login method shows the widget
   login() {
+    let self = this;
     console.log('Auth0Service - LOGIN called', this.lock)
     this.lock.show({});
     
     return {
       hide() {
-        this.lock.hide();
+        self.lock.hide();
       }
     }
   }

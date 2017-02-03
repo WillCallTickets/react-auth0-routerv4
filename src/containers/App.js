@@ -15,8 +15,6 @@ class App extends Component {
   
   // constructor(props, context) {
   //   super(props, context);
-  //   // console.log('APP   CTX', this.context)
-  //   // console.log('APP PROPS', this.props)
   // }
   
   logout = (e) => {
@@ -109,16 +107,3 @@ class App extends Component {
 }
 
 export default _baseContainer(App);
-
-//
-// {/* :id will be available at GameForm>props*/}
-// <Match exactly pattern="/game/:id" render={() => (
-//   logged ? (
-//       <GameForm/>
-//     ) : (
-//       <Redirect to={{
-//         pathname: '/login',
-//         state: { referrer: '/games/:id' }
-//       }} />
-//     )
-// )}/>
