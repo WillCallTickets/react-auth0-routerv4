@@ -1,18 +1,30 @@
 import React, { Component, PropTypes } from 'react';
+// import { connect } from 'react-redux';
 import Auth0Service from '../services/Auth0Service';
+// import setProfile from '../actions/auth_actions';
 
 // export function _baseContainer(WrappedComponent, requiresAuth = false, roles = []) {
 export function _baseContainer(WrappedComponent) {
   
-  return class _baseContainer extends Component {
+  class _baseContainer extends Component {
+    
     static contextTypes = {
-      router: PropTypes.object
+      router: PropTypes.object,
+      store: PropTypes.object
     }
     
-    state = {
-      auth0: new Auth0Service(this.context.router),
-      profile: null
-    };
+    constructor(props, context){
+      super(props, context);
+  
+      // console.log('base CTX', context);
+      // console.log('base PROPS', props);
+  
+      this.state = {
+        auth0: new Auth0Service(this.context.router, this.context.store),
+        profile: null
+      };
+    }
+    
     
     componentWillMount() {
       
@@ -22,14 +34,17 @@ export function _baseContainer(WrappedComponent) {
       // else if (requiresAuth && this.state.auth0.isLoggedIn() && )
       // redirect to 'access denied' page
       
-      // console.log('comp will mount')
-      this.profileSubscription = this.state.auth0.subscribeToProfile((profile) => {
-        this.setState({profile});
-      });
+      // console.log('comp will mount', this.props)
+      // this.profileSubscription = this.state.auth0.subscribeToProfile((profile) => {
+      //   // console.log('Subscribing to profile- base', WrappedComponent)
+      //   this.setState({profile});
+      //
+      //   // this.updateTheP(profile);
+      // });
     }
     
     componentWillUnmount() {
-      this.profileSubscription.close();
+      // this.profileSubscription.close();
     }
     
     render() {
@@ -45,14 +60,26 @@ export function _baseContainer(WrappedComponent) {
       );
     }
     
-    onUpdateProfile = (newProfile) => {
-      return this.state.auth0.updateProfile(this.state.profile.user_id, newProfile);
-    }
+    // updateTheP = (profile) => {
+    //   console.log('the p')
+    // }
+    
+    // fires when we update via edit profile/submit
+    // onUpdateProfile = (newProfile) => {
+    //   console.log('Base on Update')
+    //
+    //   return this.state.auth0.updateProfile(this.state.profile.user_id, newProfile);
+    // }
   };
-}
+  
+  _baseContainer.PropTypes = {
+    auth0: PropTypes.object,
+    profile: PropTypes.object
+    //,    onUpdateProfile: PropTypes.func
+  };
+  
 
-_baseContainer.PropTypes = {
-  auth0: PropTypes.object,
-  profile: PropTypes.object,
-  onUpdateProfile: PropTypes.func
-};
+  
+  return _baseContainer;
+  
+}

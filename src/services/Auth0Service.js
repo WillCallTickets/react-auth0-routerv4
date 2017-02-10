@@ -2,6 +2,7 @@
 import { EventEmitter } from 'events';
 import { isTokenExpired } from './jwtHelper';
 import Auth0Lock from 'auth0-lock';
+import { setUser, unsetUser } from '../actions/user_actions';
 
 export const ROOT_ROUTE = '/';
 export const NEXT_PATH_KEY = 'next_path';
@@ -17,7 +18,7 @@ export default class Auth0Service extends EventEmitter {
   // an attempt at a singleton
   static instance = null;
   
-  constructor(contextRouter) {
+  constructor(contextRouter, contextStore) {
     super();
     
     if(this.instance) {
@@ -38,7 +39,10 @@ export default class Auth0Service extends EventEmitter {
       }
     })
     
+    
     this.router = contextRouter;
+    this.store = contextStore;
+    
     // Add callback for lock `authenticated` event
     this.lock.on('authenticated', this._doAuthentication.bind(this))
     // Add callback for lock `authorization_error` event
@@ -50,28 +54,32 @@ export default class Auth0Service extends EventEmitter {
   }
   
   _doAuthentication(authResult){
-    var nPath = this.getNextPath();
-    console.log('DO AUTH - NEXT PATH', nPath)
+    
+    // console.log('do auth', authResult)
         
     // Save the user & access token
     this.setIdToken(authResult.idToken);
     this.setAccessToken(authResult.accessToken);
     // TODO dispatch redux action to save token to store?
+  
+    // debugger;
         
     // Async loads the user profile data
     this.lock.getProfile(authResult.idToken, (error, profile) => {
       if (error) {
         console.log('Error loading the Profile', error);
       } else {
+        // console.log('AUTH0 - Post get profile example', '<Redirect to= pathname: "/login", state: { referrer: "/profile/edit" ');
+        
         this.setProfile(profile);
         
-        console.log('AUTH0 - Post get profile example', '<Redirect to= pathname: "/login", state: { referrer: "/profile/edit" ');
         // default is to redirect to login page - set by lock component
         // unfortunately, this creates an endless loop to the login page and
         // worse yet, it redirects to /login#
         
         // by redirecting to the home route '/', or a route of our choice,
         // the router is able to use it's state.referrer
+        
         this.router.transitionTo(DEFAULT_POST_LOGIN_ROUTE);
       }
     });
@@ -85,8 +93,8 @@ export default class Auth0Service extends EventEmitter {
   // login method shows the widget
   login() {
     let self = this;
-    console.log('Auth0Service - LOGIN called', this.lock)
-    this.lock.show({});
+    // console.log('Auth0Service - LOGIN called', this.lock)
+    self.lock.show({});
     
     return {
       hide() {
@@ -102,39 +110,42 @@ export default class Auth0Service extends EventEmitter {
   }
   
   logout(transitionTo = ROOT_ROUTE){
-    console.log('Auth0Service - Logout called')
+    // console.log('Auth0Service - Logout called')
   
     // Clear user token and profile data from localStorage
     this.clearNextPath();
     this.clearIdToken();
     this.clearAccessToken();
     this.clearProfile();
+  
+    this.store.dispatch(unsetUser());
     
     this.router.transitionTo(transitionTo);
   }
   
  // PROFILE SUBSCRIPTION
-  subscribeToProfile(subscription) {
-    let self = this; // set this up to be available in the return > close block
-    self.on('profile_updated', subscription);
-  
-    if (self.isLoggedIn()) {
-      subscription(self.getProfile());
-
-      self.lock.getUserInfo(this.getAccessToken(), (error, profile) => {
-        if (error) {
-          return self.setProfile({error});
-        }
-        self.setProfile(profile);
-      });
-    }
-    
-    return {
-      close() {
-        self.removeListener('profile_updated', subscription);
-      }
-    };
-  }
+ //  subscribeToProfile(subscription) {
+ //    let self = this; // set this up to be available in the return > close block
+ //    self.on('profile_updated', subscription);
+ //
+ //    if (self.isLoggedIn()) {
+ //      subscription(self.getProfile());
+ //
+ //      self.lock.getUserInfo(this.getAccessToken(), (error, profile) => {
+ //        if (error) {
+ //          return self.setProfile({error});
+ //        }
+ //        // console.log('self setter')
+ //        self.setProfile(profile);
+ //      });
+ //    }
+ //
+ //    return {
+ //      close() {
+ //        self.removeListener('profile_updated', subscription);
+ //      }
+ //    };
+ //  }
   
   fetchAsUser(input, init={}) {
     const headers = init.headers || {};
@@ -161,6 +172,7 @@ export default class Auth0Service extends EventEmitter {
       });
       
       const profile = await response.json();
+      console.log('Profile updated')
       this.setProfile(profile);
     } catch (error) {
       return error;
@@ -174,12 +186,15 @@ export default class Auth0Service extends EventEmitter {
   }
   setProfile(profile) {
     localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
-    // TODO no longer using events - replace with dispatch action
-    this.emit('profile_updated', profile);
+    this.store.dispatch(setUser(profile))
+    
+    // TODO get ref to dispatch then use dispatch => setUser(profile)
+    
+    console.log('PRO----FILE SET ')
+    //this.emit('profile_updated', profile);
   }
   clearProfile() {
     localStorage.removeItem(PROFILE_KEY);
-    // TODO no longer using events - replace with dispatch action
     this.emit('profile_updated', null);
   }
   

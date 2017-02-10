@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Link, Match, Redirect } from 'react-router';
+import { Match, Redirect } from 'react-router';
+import ActiveLink from '../components/ActiveLink';
 
 import { _baseContainer } from './_baseContainer';
 import Home from './Home';
@@ -35,17 +36,17 @@ class App extends Component {
         <div className="ui five item menu" style={{justifyContent:'flex-start', textAlign:'left'}}>
           
           {/* TODO combine links into one expression */}
-          <Link className="item" activeClassName="active" activeOnlyWhenExact to="/">Home</Link>
-          <Link className="item" activeClassName="active" activeOnlyWhenExact to="/games">Games</Link>
+          <ActiveLink to="/">Home</ActiveLink>
+          <ActiveLink to="/games">Games</ActiveLink>
   
           { logged ? (
-              <Link className="item" activeClassName="active" activeOnlyWhenExact to="/games/new">Add New Game</Link>
+              <ActiveLink to="/games/new">Add New Game</ActiveLink>
             ) : (
               <span className="item"></span>
             )}
   
           { logged ? (
-              <Link className="item" activeClassName="active" activeOnlyWhenExact to="/profile/edit">Profile</Link>
+              <ActiveLink to="/profile/edit">Profile</ActiveLink>
             ) : (
               <span className="item"></span>
             )}
@@ -53,7 +54,7 @@ class App extends Component {
           { logged ? (
               <a className="item" onClick={(e) => this.logout(e)}>Log Out</a>
             ) : (
-              <Link className="item" activeClassName="active" activeOnlyWhenExact to="/profile/edit">Login</Link>
+              <ActiveLink to="/profile/edit">Login</ActiveLink>
             )}
           
         </div>

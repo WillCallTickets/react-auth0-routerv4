@@ -17,8 +17,8 @@ class EditProfile extends Component {
   }
   
   render() {
-    console.log('PROFILE   CTX', this.context)
-    console.log('PROFILE PROPS', this.props)
+    // console.log('PROFILE   CTX', this.context)
+    // console.log('PROFILE PROPS', this.props)
     
     const {profile} = this.props;
     

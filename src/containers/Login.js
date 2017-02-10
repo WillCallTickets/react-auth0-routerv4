@@ -8,26 +8,26 @@ class Login extends Component {
   }
   
   componentWillMount() {
-    console.log('LOGIN MOUNTING', this.props.auth0.getNextPath())
-    console.log('LOGIN STATE', this.state);
+    // console.log('LOGIN MOUNTING', this.props.auth0.getNextPath())
+    // console.log('LOGIN STATE', this.state);
     this.props.auth0.login();
   }
   
   componentWillUnmount() {
-    console.log('LOGIN UNMOUNT', this.props.auth0.getNextPath());
+    // console.log('LOGIN UNMOUNT', this.props.auth0.getNextPath());
     this.props.auth0.lock.hide();
   }
   
   login = (e) => {
     e.preventDefault();
-    console.log('LOG   CTX', this.context)
-    console.log('LOG PROPS', this.props)
+    // console.log('LOG   CTX', this.context)
+    // console.log('LOG PROPS', this.props)
     this.props.auth0.login();
   }
   
   render() {
-    console.log('LOGIN   CTX', this.context)
-    console.log('LOGIN PROPS', this.props)
+    // console.log('LOGIN   CTX', this.context)
+    // console.log('LOGIN PROPS', this.props)
     
     return (
       <div className="Login">

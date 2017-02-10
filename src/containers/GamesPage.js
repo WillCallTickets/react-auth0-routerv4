@@ -13,18 +13,7 @@ class GamesPage extends Component{
   componentDidMount = () => {
     this.props.fetchGames();
   }
-  
-  // // this will be passed to form component
-  // deleteGame = ({id}) => {
-  //   console.log('deleting in g page')
-  //   return this.props.deleteGame({id})
-  //   .then(
-  //     () => {
-  //       this.setState({redirect: true})
-  //     }
-  //   );
-  // }
-  
+    
   render(){
     // console.log('GAMES RETURNED From Fetch', this.props)
     return(
