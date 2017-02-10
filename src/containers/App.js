@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import { Route, Redirect, Link } from 'react-router-dom';
 // import ActiveLink from '../components/ActiveLink';
 
+
+// import DevTool from './DevTools';
+
 import { _baseContainer } from './_baseContainer';
 import Home from './Home';
 import Login from './Login';
 import EditProfile from './EditProfile';
 import GamesPage from './GamesPage';
 import GameFormPage from './GameFormPage';
+import './App.css';
 
 
 const ActiveLink = ({ label, to, activeOnlyWhenExact }) => (
@@ -15,7 +19,6 @@ const ActiveLink = ({ label, to, activeOnlyWhenExact }) => (
     <Link className={match ? 'active item' : 'item'} to={to}>{label}</Link>
   )} />
 );
-
 
 
 class App extends Component {
@@ -40,9 +43,11 @@ class App extends Component {
     const logged = this.props.auth0.isLoggedIn();
     
     return (
+      <div>
       <div className="ui container">
         
-        <div className="ui five item menu" style={{justifyContent:'flex-start', textAlign:'left'}}>
+        
+        <div className="ui five item menu " style={{justifyContent:'flex-start', textAlign:'left'}}>
           
           {/* TODO combine links into one expression */}
           <ActiveLink activeOnlyWhenExact to="/" label="Home"/>
@@ -111,6 +116,7 @@ class App extends Component {
         </div>
         {/* end of page-content */}
         
+      </div>
       </div>
     );
   }
