@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Match, Redirect } from 'react-router';
-import ActiveLink from '../components/ActiveLink';
+import { Route, Redirect, Link } from 'react-router-dom';
+// import ActiveLink from '../components/ActiveLink';
 
 import { _baseContainer } from './_baseContainer';
 import Home from './Home';
@@ -8,6 +8,15 @@ import Login from './Login';
 import EditProfile from './EditProfile';
 import GamesPage from './GamesPage';
 import GameFormPage from './GameFormPage';
+
+
+const ActiveLink = ({ label, to, activeOnlyWhenExact }) => (
+  <Route path={to} exact={activeOnlyWhenExact} children={({ match }) => (
+    <Link className={match ? 'active item' : 'item'} to={to}>{label}</Link>
+  )} />
+);
+
+
 
 class App extends Component {
   static contextTypes = {
@@ -36,17 +45,17 @@ class App extends Component {
         <div className="ui five item menu" style={{justifyContent:'flex-start', textAlign:'left'}}>
           
           {/* TODO combine links into one expression */}
-          <ActiveLink to="/">Home</ActiveLink>
-          <ActiveLink to="/games">Games</ActiveLink>
+          <ActiveLink activeOnlyWhenExact to="/" label="Home"/>
+          <ActiveLink activeOnlyWhenExact to="/games" label="Games" />
   
           { logged ? (
-              <ActiveLink to="/games/new">Add New Game</ActiveLink>
+              <ActiveLink activeOnlyWhenExact to="/games/new" label="Add New Game"/>
             ) : (
               <span className="item"></span>
             )}
   
           { logged ? (
-              <ActiveLink to="/profile/edit">Profile</ActiveLink>
+              <ActiveLink activeOnlyWhenExact to="/profile/edit" label="Profile" />
             ) : (
               <span className="item"></span>
             )}
@@ -54,7 +63,7 @@ class App extends Component {
           { logged ? (
               <a className="item" onClick={(e) => this.logout(e)}>Log Out</a>
             ) : (
-              <ActiveLink to="/profile/edit">Login</ActiveLink>
+              <ActiveLink activeOnlyWhenExact to="/profile/edit" label="Login" />
             )}
           
         </div>
@@ -62,11 +71,11 @@ class App extends Component {
         
         {/* TODO look into switch construct of RRv4 - switch ensures only on e component match*/}
         <div className="page-content">
-          <Match exactly pattern="/" component={Home}/>
-          <Match pattern="/login" component={Login}/>
-          <Match exactly pattern="/games" component={GamesPage}/>
+          <Route exact path="/" component={Home}/>
+          <Route path="/login" component={Login}/>
+          <Route exact path="/games" component={GamesPage}/>
           
-          <Match pattern="/games/new" render={() => (
+          <Route path="/games/new" render={() => (
             logged ? (
                 <GameFormPage />
               ) : (
@@ -78,7 +87,7 @@ class App extends Component {
           )}/>
   
           {/* Note how we pass params here */}
-          <Match exactly pattern="/game/:id" render={(id) => (
+          <Route exact path="/game/:id" render={(id) => (
            logged ? (
                <GameFormPage {...id}/>
              ) : (
@@ -89,7 +98,7 @@ class App extends Component {
              )
          )}/>
           
-          <Match pattern="/profile/edit" render={() => (
+          <Route path="/profile/edit" render={() => (
             logged ? (
                 <EditProfile />
               ) : (

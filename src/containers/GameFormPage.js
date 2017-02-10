@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
+import { Redirect } from 'react-router-dom';
 import { saveGame, fetchGame, updateGame } from '../actions/games_actions';
 import GameForm from './GameForm';
 
@@ -10,9 +10,10 @@ class GameFormPage extends Component {
   }
   
   componentDidMount = () => {
-    if(this.props.params.id){
-      console.log('FORM MOUNTED', this.props.params.id)
-      this.props.fetchGame(parseInt(this.props.params.id, 10));
+    const { match } = this.props;
+    if(match && match.params.id){
+      console.log('FORM MOUNTED', match.params.id)
+      this.props.fetchGame(parseInt(match.params.id, 10));
     }
   }
   
@@ -53,10 +54,14 @@ class GameFormPage extends Component {
 
 function mapStateToProps(state, props){
   //console.log('MAPPING', state)
+  // console.log('MAPPING', props)
   // console.log('MAPPING IDX', props.params.id)
-  if(props.params.id){
+  const { match } = props;
+  // console.log('MATCH', match)
+  
+  if(match && match.params && match.params.id){
     return {
-      game: state.games.find(item => item.id === parseInt(props.params.id, 10))
+      game: state.games.find(item => item.id === parseInt(match.params.id, 10))
     }
   }
   

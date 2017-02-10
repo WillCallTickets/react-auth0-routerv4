@@ -4,6 +4,13 @@ import { isTokenExpired } from './jwtHelper';
 import Auth0Lock from 'auth0-lock';
 import { setUser, unsetUser } from '../actions/user_actions';
 
+
+//https://github.com/ReactTraining/history#properties
+import createHistory from 'history/createBrowserHistory';
+const history = createHistory();
+
+
+
 export const ROOT_ROUTE = '/';
 export const NEXT_PATH_KEY = 'next_path';
 export const LOGIN_ROUTE = '/login';// this is the page to go to when in need of auth
@@ -34,7 +41,7 @@ export default class Auth0Service extends EventEmitter {
     // Configure Auth0
     this.lock = new Auth0Lock(this.clientId, this.domain, {
       auth: {
-        redirectUrl: `${window.location.origin}/login`,
+        //redirectUrl: `${window.location.origin}/login`,
         responseType: 'token'
       }
     })
@@ -80,7 +87,18 @@ export default class Auth0Service extends EventEmitter {
         // by redirecting to the home route '/', or a route of our choice,
         // the router is able to use it's state.referrer
         
-        this.router.transitionTo(DEFAULT_POST_LOGIN_ROUTE);
+        // this.router.transitionTo(DEFAULT_POST_LOGIN_ROUTE);
+        // console.log(this.router)
+        // this.router.location.pathname = DEFAULT_POST_LOGIN_ROUTE;
+  
+        // console.log('HISTORY', history);
+        // history.push(DEFAULT_POST_LOGIN_ROUTE);
+        history.push({
+          pathname: DEFAULT_POST_LOGIN_ROUTE,
+          state: this.store.games
+        });
+        history.go();// skip login and go back one more
+        // history.push('/');
       }
     });
   }
@@ -120,7 +138,9 @@ export default class Auth0Service extends EventEmitter {
   
     this.store.dispatch(unsetUser());
     
-    this.router.transitionTo(transitionTo);
+    // this.router.location(transitionTo);
+    history.push(transitionTo);
+    history.go();
   }
   
  // PROFILE SUBSCRIPTION

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
+import { Redirect } from 'react-router-dom';
 import { fetchGames, deleteGame } from '../actions/games_actions';
 
 import GamesList from '../components/GamesList';
